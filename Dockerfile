@@ -37,5 +37,5 @@ USER node
 # Heroku ignores EXPOSE, but it's good practice
 EXPOSE 3000
 
-# CRITICAL: Use sh -c to expand the $PORT variable provided by Heroku
-CMD ["sh", "-c", "pnpm start --port $PORT"]
+# FIX: We use the '--' to pass the '-p' flag through pnpm to the actual server
+CMD ["sh", "-c", "pnpm start -- -p $PORT"]
