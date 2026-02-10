@@ -1,4 +1,9 @@
 # Build local monorepo image
+# docker build --no-cache -t  flowise .
+
+# Run image
+# docker run -d -p 3000:3000 flowise
+
 FROM node:20-alpine
 
 # Install system dependencies and build tools
@@ -18,7 +23,6 @@ RUN apk update && \
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Increase memory for the build process
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
 WORKDIR /usr/src/flowise
@@ -30,12 +34,12 @@ COPY . .
 RUN pnpm install && \
     pnpm build
 
-# Give the node user ownership
+# Give the node user ownership of the application files
 RUN chown -R node:node .
+
+# Switch to non-root user (node user already exists in node:20-alpine)
 USER node
 
-# Heroku ignores EXPOSE, but it's good practice
 EXPOSE 3000
 
-# FIX: We use the '--' to pass the '-p' flag through pnpm to the actual server
-CMD ["sh", "-c", "node packages/server/dist/index.js --port $PORT"]
+CMD [ "pnpm", "start" ]
