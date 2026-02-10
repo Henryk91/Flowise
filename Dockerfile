@@ -38,4 +38,4 @@ USER node
 EXPOSE 3000
 
 # FIX: We use the '--' to pass the '-p' flag through pnpm to the actual server
-CMD ["sh", "-c", "pnpm start -- -p $PORT"]
+CMD ["sh", "-c", "node packages/server/dist/index.js --port $PORT"]
